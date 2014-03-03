@@ -72,3 +72,8 @@ verb <%= @verb %>  # don't spam the log with messages.
 mute <%= @mute %>  # suppress identical messages > 10 occurances.
 
 script-security <%= @script_security %>
+
+<% if node['openvpn']['tls_verify']['enabled'] -%>
+# tls-verify
+tls-verify "<%= node['openvpn']['tls_verify']['script'] %> <%= node['openvpn']['tls_verify']['user_file'] %>"
+<% end -%>

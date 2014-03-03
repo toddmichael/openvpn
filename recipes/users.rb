@@ -17,10 +17,14 @@
 # limitations under the License.
 #
 
+# for tls-verify use
+users = []
+
 if Chef::Config[:solo]
   Chef::Log.warn 'The openvpn::users recipe requires a Chef Server, skipping.'
 else
   search('users', '*:*') do |u|
+    users = u['id']
     execute "generate-openvpn-#{u['id']}" do
       command "./pkitool #{u['id']}"
       cwd     '/etc/openvpn/easy-rsa'
@@ -54,5 +58,18 @@ else
       EOH
       not_if { ::File.exists?("#{node["openvpn"]["key_dir"]}/#{u['id']}.tar.gz") }
     end
+  end
+end
+
+# tls-verify whitelist file
+
+if node['openvpn']['tls_verify']['enabled']
+  template node['openvpn']['tls_verfiy']['user_file'] do
+    mode 00644
+    owner 'root'
+    group 'openvpn'
+    variables(
+      :users => users
+    )
   end
 end
