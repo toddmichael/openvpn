@@ -39,33 +39,6 @@ directory key_dir do
   mode  '0700'
 end
 
-# tls-verify: see OpenVPN manpage
-if node['openvpn']['tls_verify']['enabled']
-
-  # create tls-verify directory
-  directory node['openvpn']['tls_verify']['dir'] do
-    owner 'root'
-    group 'root'
-    mode 00755
-  end
-
-  # upload tls verify script
-  cookbook_file node['openvpn']['tls_verify']['script'] do
-    owner 'root'
-    group 'openvpn'
-    mode 00754
-  end
-
-  # create blank allowed_users file
-  # working file to be populated via users recipe
-  file node['openvpn']['tls_verify']['user_file'] do
-    action :create_if_missing
-    mode 00660
-    owner 'root'
-    group 'openvpn'
-  end
-end
-
 directory '/etc/openvpn/easy-rsa' do
   owner 'root'
   group 'root'
